@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>账户管理</title>
+    <script src="http://weiyoubot.com/scripts/jquery-2.0.3.min.js"></script>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <style>
+        html {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        body {
+            overflow: hidden;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        .list-container {
+            width: 20rem;
+            float: left;
+            overflow-y: scroll;
+            height: 100%;
+        }
+        .list-container-inner {
+            padding: 1rem;
+        }
+        .item-title {
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 18rem;
+            margin-bottom: 0.5rem;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .picture-container {
+            width: calc(100% - 22rem - 1px);
+            border-left: 1px dashed green;
+            float: right;
+            height: 100%;
+            overflow-y: scroll;
+        }
+        .picture-container img {
+            width: 90%;
+            margin: 1rem auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="list-container">
+    <div class="list-container-inner">
+    </div>
+</div>
+<div class="picture-container">
+    <div class="picture-container-inner">
+    </div>
+</div>
+<script>
+    var picturesData = [];
+    $.ajax({
+        type: 'GET',
+        url: 'http://192.168.0.100:9999/pictures/list',
+        data: {},
+        // 这里配置的超时时间不能太短，否则很容易超时
+        timeout: 10000,
+        async: true,
+        success: function (data) {
+            if(data.sta == 0){
+                picturesData = data.data.items;
+                var resulthtml = '<div class="count-text">数量：'+picturesData.length+'</div>';
+                for (var i = 0; i< picturesData.length; i++) {
+                    resulthtml += '<div id="pid_'+i+'" class="item-title">'+picturesData[i].title+'</div>';
+                }
+                $('.list-container-inner').append(resulthtml);
+                $('.item-title').bind('click', function () {
+                    var index = $(this).attr('id').split('_')[1];
+                    console.log('tkyj++++'+JSON.stringify(picturesData[index]))
+                    var html = '';
+                    for (var i = 0; i < picturesData[index].imgs.length; i++) {
+                        html += '<img src="'+picturesData[index].imgs[i]+'">';
+                    }
+                    console.log('tkyj++++'+html)
+                    $('.picture-container-inner').empty().append(html);
+                });
+            }
+            else{
+            }
+        },
+    });
+    /*$('.add-user-container .btn').bind('click', function () {
+        var name = $('.add-user-container .name input').val();
+        var password = $('.add-user-container .password input').val();
+        var sex = $('.add-user-container .sex input').val();
+        if (!name || !password) {
+            return;
+        }
+        $.ajax({
+            type: 'POST',
+            url: 'http://192.168.15.18:9999/user/add',
+            contentType: 'application/json',
+            data: JSON.stringify({name: name, password: password, sex: sex}),
+            timeout: 10000,
+            async: true,
+            success: function (data) {
+                console.log(data.msg)
+                if (data.sta == 0) {
+                } else {
+                }
+            },
+        });
+    });
+    $('.search-user-container .btn').bind('click', function () {
+        var key = $('.search-user-container input').val();
+
+    });*/
+</script>
+</body>
+</html>
